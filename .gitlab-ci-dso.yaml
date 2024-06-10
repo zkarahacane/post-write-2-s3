@@ -1,0 +1,37 @@
+include:
+  - project: $CATALOG_PATH
+    file: vault-ci.yml
+    ref: main
+  - project: $CATALOG_PATH
+    file: kaniko-ci.yml
+    ref: main
+
+default:
+  image: alpine:latest
+
+cache:
+  paths:
+    - node_modules
+
+variables:
+  TAG: "${CI_COMMIT_REF_SLUG}"
+  DOCKERFILE: Dockerfile
+  REGISTRY_URL: "${REGISTRY_HOST}/${PROJECT_PATH}"
+
+stages:
+  - read-secret
+  - docker-build
+
+read_secret:
+  stage: read-secret
+  extends:
+    - .vault:read_secret
+
+docker-build:
+  variables:
+    WORKING_DIR: "."
+    IMAGE_NAMES: s3-upload-app:${CI_COMMIT_REF_SLUG} s3-upload-app:0.0.1
+    TAG: "${CI_COMMIT_REF_SLUG}"
+  stage: docker-build
+  extends:
+    - .kaniko:build-push
