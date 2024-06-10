@@ -20,6 +20,35 @@ s3 = boto3.client(
     endpoint_url=S3_ENDPOINTURL,
 )
 
+# Variable globale pour simuler l'état de readiness
+ready = False
+
+@app.route('/liveness', methods=['GET'])
+def liveness():
+    # Check if the application is alive
+    return jsonify({"status": "alive"}), 200
+
+@app.route('/readiness', methods=['GET'])
+def readiness():
+    global ready
+    # Check if the application is ready
+    if ready:
+        return jsonify({"status": "ready"}), 200
+    else:
+        return jsonify({"status": "not ready"}), 503
+
+@app.route('/set_ready', methods=['POST'])
+def set_ready():
+    global ready
+    ready = True
+    return jsonify({"message": "Application is now ready"}), 200
+
+@app.route('/set_not_ready', methods=['POST'])
+def set_not_ready():
+    global ready
+    ready = False
+    return jsonify({"message": "Application is now not ready"}), 200
+
 @app.route('/ODFClient', methods=['POST'])
 def upload_content():
     if not request.data:
