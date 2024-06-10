@@ -11,13 +11,13 @@ S3_KEY = os.getenv("S3_ACCESS_KEY_ID")
 S3_SECRET = os.getenv("S3_SECRET_ACCESS_KEY")
 S3_REGION = os.getenv("S3_REGION")
 S3_ENDPOINTURL = os.getenv("S3_URL")
-
+S3_FOLDER = os.getenv("S3_FOLDER")
 s3 = boto3.client(
     "s3",
     aws_access_key_id=S3_KEY,
     aws_secret_access_key=S3_SECRET,
     region_name=S3_REGION,
-    endpoint_url=S3_ENDPOINTURL
+    endpoint_url=S3_ENDPOINTURL,
 )
 
 @app.route('/ODFClient', methods=['POST'])
@@ -33,7 +33,7 @@ def upload_content():
         return jsonify({'error': 'Unsupported file type'}), 400
     
     current_time = datetime.now().strftime("%Y%m%d%H%M%S")
-    file_name = f"odfclient/{current_time}_odf{extension}"
+    file_name = "{S3_FOLDER}/odfclient/{current_time}_odf{extension}"
     
     try:
         s3.put_object(Bucket=S3_BUCKET, Key=file_name, Body=content, ContentType=content_type)

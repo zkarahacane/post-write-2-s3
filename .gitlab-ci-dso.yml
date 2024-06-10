@@ -30,7 +30,7 @@ read_secret:
 docker-build:
   variables:
     WORKING_DIR: "."
-    IMAGE_NAMES: s3-upload-app:${CI_COMMIT_REF_SLUG} s3-upload-app:0.0.1
+    IMAGE_NAMES: s3-upload-app:${CI_COMMIT_REF_SLUG} s3-upload-app:latest s3-upload-app:0.0.2
     TAG: "${CI_COMMIT_REF_SLUG}"
   stage: docker-build
   extends:
