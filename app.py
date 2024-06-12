@@ -30,12 +30,7 @@ def liveness():
 
 @app.route('/readiness', methods=['GET'])
 def readiness():
-    global ready
-    # Check if the application is ready
-    if ready:
-        return jsonify({"status": "ready"}), 200
-    else:
-        return jsonify({"status": "not ready"}), 503
+    return jsonify({"status": "ready"}), 200
 
 @app.route('/set_ready', methods=['POST'])
 def set_ready():
