@@ -35,6 +35,7 @@ def health_check():
     # Return a status code of 500 along with an error message if there are any issues
     return jsonify({'status': 'ok'}), 200
 
+app.register_blueprint(health_check_bp)
 
 @app.route('/ODFClient', methods=['POST'])
 def upload_content():
